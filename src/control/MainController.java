@@ -42,6 +42,13 @@ public class MainController {
     public String searchList(String name){
         String output = "Nicht gefunden.";
         //TODO 01: Schreibe einen Suchalgorithmus
+        allPersons.toFirst();
+        while(allPersons.hasAccess() && !allPersons.getContent().getName().equals(name)){
+            allPersons.next();
+        }
+        if(allPersons.hasAccess()){
+            output = allPersons.getContent().getName()+" ("+allPersons.getContent().getBirthdate()+")";
+        }
         return output;
     }
 
@@ -51,8 +58,76 @@ public class MainController {
      */
     public void sortList(){
         //TODO 02: Schreibe einen Sortieralgorithmus
+        int length=0;
+        allPersons.toFirst();
+        while (allPersons.hasAccess()){
+            allPersons.next();
+            length++;
+        }
+        quickSort(allPersons, 0, length-1);
     }
 
+    private void quickSort(List<Person> list, int start, int end){
+        int i = start;
+        int j = end;
+        int middle = (start+end)/2;
+        list.toFirst();
+        for (int k = 0; k<middle; k++){
+            list.next();
+        }
+        Person pivot = list.getContent();
+        Person tempP1, tempP2;
 
+        while(i<=j) {
+            list.toFirst();
+            for (int k = 0; k < i; k++) {
+                list.next();
+            }
+            while (list.getContent().getName().compareTo(pivot.getName()) < 0) {
+                list.next();
+                i++;
+
+            }
+            tempP1 = list.getContent();
+
+            list.toFirst();
+            for (int k = 0; k < j; k++) {
+                list.next();
+            }
+            while (list.getContent().getName().compareTo(pivot.getName()) > 0) {
+                j--;
+                list.toFirst();
+                for (int k=0; k<j; k++){
+                    list.next();
+                }
+            }
+            tempP2 = list.getContent();
+
+            if(i<=j) {
+                list.toFirst();
+                for (int k = 0; k < i; k++) {
+                    list.next();
+                }
+                list.setContent(tempP2);
+
+                list.toFirst();
+                for (int k = 0; k < j; k++) {
+                    list.next();
+                }
+                list.setContent(tempP1);
+
+                i++;
+                j--;
+            }
+        }
+
+        if(start<j){
+            quickSort(list, start, j);
+        }
+        if(i<end){
+            quickSort(list, i, end);
+        }
+
+    }
 
 }
